@@ -47,18 +47,7 @@ jobs:
       - name: Собрать цикл
         env:
           CHROME_PATH: ${{ steps.chrome.outputs.chrome-path }}
-        run: |
-          set -o pipefail
-          node tools/card-loop/build.mjs 2>&1 | tee ci-build.log
-
-      - name: Лог сборки
-        if: always()
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -f ci-build.log
-          git commit -m "Лог сборки карточки [skip ci]" || true
-          git push || true
+        run: node tools/card-loop/build.mjs
 
       - name: Закоммитить, если карточка изменилась
         run: |
