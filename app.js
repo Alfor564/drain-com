@@ -794,9 +794,9 @@
         localStorage.setItem("uniqueUser", "1");
         localStorage.setItem("uniqueCount", String(n));
       }
-      visitsEl.textContent = String(1240 + Math.max(1, n));
+      visitsEl.textContent = String(Math.max(1, n));
     } catch (_) {
-      visitsEl.textContent = "1241";
+      visitsEl.textContent = "1";
     }
   }
 
