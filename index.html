@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Влажный архив — Гусь</title>
+<meta name="description" content="Гусь: Steam, Discord, TikTok, Telegram. Влажный архив.">
+<meta name="theme-color" content="#e5f0fb">
+<meta name="color-scheme" content="light">
+
+<meta property="og:type" content="profile">
+<meta property="og:title" content="Влажный архив — Гусь">
+<meta property="og:description" content="Steam, Discord, TikTok, Telegram. Очень жидко.">
+<meta property="og:locale" content="ru_RU">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23e5f0fb'/%3E%3Cpath d='M6 30V13A10 10 0 0 1 16 3a10 10 0 0 1 10 10v17' fill='none' stroke='%230b1a2b' stroke-width='1.4'/%3E%3Cpath d='M12 30V14a4 4 0 0 1 8 0v16' fill='none' stroke='%230b1a2b' stroke-width='1'/%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Handjet:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Oswald:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body id="top">
+
+<!-- контур окна-арки, которым обрезается витрина -->
+<svg class="svg-defs" width="0" height="0" aria-hidden="true" focusable="false">
+  <defs>
+    <clipPath id="archClip" clipPathUnits="objectBoundingBox">
+      <path d="M0,0.56C0,0.28 0.24,0.12 0.5,0 0.76,0.12 1,0.28 1,0.56L1,1L0,1Z"/>
+    </clipPath>
+    <filter id="liquidName" x="-60%" y="-60%" width="220%" height="220%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.007 0.016" numOctaves="1" seed="4" result="noise">
+        <animate attributeName="baseFrequency" dur="24s" repeatCount="indefinite" values="0.007 0.014;0.012 0.022;0.008 0.017;0.007 0.014"/>
+      </feTurbulence>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="10" xChannelSelector="R" yChannelSelector="G">
+        <animate attributeName="scale" dur="18s" repeatCount="indefinite" values="8;14;8"/>
+      </feDisplacementMap>
+    </filter>
+    <filter id="melt" x="-6%" y="-6%" width="112%" height="112%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.0032 0.0052" numOctaves="1" seed="9" result="meltNoise">
+        <animate attributeName="baseFrequency" dur="42s" repeatCount="indefinite"
+          values="0.0032 0.0052;0.0054 0.0078;0.0032 0.0052"/>
+      </feTurbulence>
+      <feDisplacementMap in="SourceGraphic" in2="meltNoise" scale="3" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs>
+</svg>
+
+<div class="aura" aria-hidden="true"></div>
+<canvas id="ambient" aria-hidden="true"></canvas>
+<canvas id="snow" aria-hidden="true"></canvas>
+<div class="frost" aria-hidden="true"></div>
+<div class="backdrop-name" aria-hidden="true">Влажный архив</div>
+
+<!-- боковые колонки-архив -->
+<aside class="side side--left" aria-hidden="true">
+  <div class="side__track">
+    <div class="side__copy">
+      <p class="side__huge">2005.</p>
+      <p class="side__spaced">N E O N&nbsp;&nbsp;B R Y A N S K</p>
+      <p class="side__lead">ЕГО ЗВАЛИ ИЛЬЮХА</p>
+      <p class="side__small">ПРОФЕССИОНАЛЬНЫЙ АРХИТЕКТОР<br>В СВОЕЙ ПРОШЛОЙ ЖИЗНИ</p>
+      <p class="side__big">КТО<br>ДОСТОИН<br>ЖИТЬ<br>В БРЯНСКЕ?</p>
+      <p class="side__vert">АРХЕТИП</p>
+      <p class="side__meta">ГЛАВА 1 · МЯСОКОМБИНАТ НА ЗЕМЛЕ</p>
+      <p class="side__micro">Издательство ООО «Горячая Линия Майами» · отдельное спасибо: Джокеру и Жоперу · Понасенкову Евгению · Роману Гайдаенко · Докторской Колбасе · Обаме Бараку · Алексею Навальному · Д. и А. Гордеевым · Илье Крутышкину</p>
+      <p class="side__meta">ГЛАВА 2 · ОБАМА И ДЖОКЕР</p>
+      <p class="side__small">ЧИСТЫЕ БИТЫ · ОБАМИУМ · БРЯНСКИЙ МЯСОКОМБИНАТ</p>
+      <p class="side__vert side__vert--end">ГЛАВА 3</p>
+      <p class="side__big side__big--outline">ИКОНА<br>КОЛБАСЫ</p>
+      <p class="side__meta">ГЛАВА 4 · РОМА СБЕГАЕТ С АРТЕКА</p>
+      <p class="side__micro">«Есть что-то круче, чем чистые биты?» — «Колбасиум вместе с Обамиумом и Путиумом в мече Ультра Путино-Лукашенко».</p>
+      <p class="side__spaced">THE END.</p>
+      <p class="side__huge side__huge--outline">2005.</p>
+    </div>
+  </div>
+</aside>
+
+<aside class="side side--right" aria-hidden="true">
+  <div class="side__track">
+    <div class="side__copy">
+      <p class="side__huge">6969.</p>
+      <p class="side__spaced">K I R I E S H K I</p>
+      <p class="side__lead">ЗАВОД КИРИЕШЕК</p>
+      <p class="side__small">РЕСПУБЛИКА СЕВЕРНАЯ ОСЕТИЯ-АЛАНИЯ<br>ОСНОВАНО НА РЕАЛЬНЫХ СОБЫТИЯХ</p>
+      <p class="side__big">СИБИРСКИЙ<br>БЕРЕГ</p>
+      <p class="side__vert">КИРИЕШКИУМ</p>
+      <p class="side__meta">ГЛАВА 1 · ВЫСАДКА</p>
+      <p class="side__micro">Издатель «Горячая Линия Майами» · спонсор Жук Бармен Лобстер 2 · Евгеха Мелхосперма Поносович · сухарики, сосновый бор и одна погнутая сосна.</p>
+      <p class="side__meta">ГЛАВА 2 · КИРИЕШКИУМ</p>
+      <p class="side__small">ЧИСТЫЕ БИТЫ · ОБАМИУМ · ДЕСПАСИТИУМ</p>
+      <p class="side__vert side__vert--end">ГЛАВА 3</p>
+      <p class="side__big side__big--outline">ЧУНГА<br>ЧАК</p>
+      <p class="side__meta">ГЛАВА 4 · СУПЕР БРАВЛ СТАРС АССАСИН СТАЛКЕР СНАЙПЕР 1996</p>
+      <p class="side__micro">«Овсяная каша», «супер дробовик украина с большой буквы 2014», «павук с Плутона».</p>
+      <p class="side__spaced">TO BE CONTINUED.</p>
+      <p class="side__huge side__huge--outline">6969.</p>
+    </div>
+  </div>
+</aside>
+
+<div class="grain" aria-hidden="true"></div>
+<a class="skip" href="#links">Перейти к ссылкам</a>
+
+<div class="shell">
+  <header class="masthead">
+    <p class="masthead__brand"><span class="masthead__dot" aria-hidden="true"></span>Влажный архив</p>
+    <p class="masthead__place" id="visits" aria-label="Уникальные посетители">1240</p>
+  </header>
+
+  <main class="layout">
+
+    <!-- ═════ ЛИЧНОЕ ═════ -->
+    <div class="hero__text">
+      <p class="kicker">контакты</p>
+
+      <h1 class="name" id="name">
+        <span class="name__first"><span class="name__liquid">Гусь</span></span>
+      </h1>
+
+      <p class="lead">Сделаю, а может не сделаю</p>
+
+      <dl class="facts">
+        <div class="facts__item">
+          <dt>страна</dt>
+          <dd>Украина</dd>
+        </div>
+        <div class="facts__item">
+          <dt>время</dt>
+          <dd class="facts__clock"><time id="kyivTime" datetime="01:35">01:35</time> <span class="facts__zone">Киев</span></dd>
+        </div>
+        <div class="facts__item">
+          <dt>статус</dt>
+          <dd class="status"><span class="status__dot" aria-hidden="true"></span>Жидкий</dd>
+        </div>
+        <div class="facts__item facts__item--react">
+          <dt>оценка</dt>
+          <dd>
+            <div class="react" role="group" aria-label="Оценить сайт">
+              <button class="react__btn" type="button" data-react="like" aria-pressed="false" aria-label="Лайк" title="Лайк">
+                <span class="react__thumb" aria-hidden="true">
+                  <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round">
+                    <path d="M14 18v13H9.5A2.5 2.5 0 0 1 7 28.5v-8A2.5 2.5 0 0 1 9.5 18H14Z"/>
+                    <path d="M14 18l6-10a2 2 0 0 1 3.5 1v7h6a2.5 2.5 0 0 1 2.4 3.1l-1.8 8.3A3 3 0 0 1 27 30H14"/>
+                  </svg>
+                </span>
+                <span class="react__cheek" data-react-count="like">0</span>
+              </button>
+              <button class="react__btn" type="button" data-react="dislike" aria-pressed="false" aria-label="Дизлайк" title="Дизлайк">
+                <span class="react__thumb react__thumb--down" aria-hidden="true">
+                  <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round">
+                    <path d="M14 18v13H9.5A2.5 2.5 0 0 1 7 28.5v-8A2.5 2.5 0 0 1 9.5 18H14Z"/>
+                    <path d="M14 18l6-10a2 2 0 0 1 3.5 1v7h6a2.5 2.5 0 0 1 2.4 3.1l-1.8 8.3A3 3 0 0 1 27 30H14"/>
+                  </svg>
+                </span>
+                <span class="react__cheek" data-react-count="dislike">0</span>
+              </button>
+            </div>
+          </dd>
+        </div>
+      </dl>
+
+      <aside class="greats" aria-labelledby="greats-title">
+        <p class="greats__title" id="greats-title">Знаком с <b>ВЕЛИКИМИ</b>:</p>
+        <ul class="greats__list">
+          <li><span class="greats__name">Никита</span><span class="greats__role">(наставник)</span></li>
+          <li><span class="greats__name">Чмокси</span><span class="greats__role">(крутыш)</span></li>
+          <li><span class="greats__name">Илья</span><span class="greats__role">(великая личность)</span></li>
+          <li><span class="greats__name">Сергей</span><span class="greats__role">(актёр)</span></li>
+          <li><span class="greats__name">Войд</span><span class="greats__role">(парнишка)</span></li>
+          <li><span class="greats__name">Андрей</span><span class="greats__role">(немой)</span></li>
+          <li><span class="greats__name">Слон</span><span class="greats__role">(Дефоко Зетник)</span></li>
+          <li><span class="greats__name">Гдпуп</span><span class="greats__role">(Зоинк)</span></li>
+          <li><span class="greats__name">Софа</span><span class="greats__role">(Милфа)</span></li>
+          <li><span class="greats__name">Пудель</span><span class="greats__role">(Милаха)</span></li>
+          <li><span class="greats__name">Швепси</span><span class="greats__role">(Лайк)</span></li>
+          <li><span class="greats__name">Пётр</span><span class="greats__role">(Сигма)</span></li>
+          <li><span class="greats__name">Мифис</span><span class="greats__role">(Прости)</span></li>
+          <li><span class="greats__name">Стопочка</span><span class="greats__role">(Аогда арт)</span></li>
+          <li><span class="greats__name">Смайл</span><span class="greats__role">(Улыбочка)</span></li>
+          <li><span class="greats__name">Одногрупники</span><span class="greats__role">(Красавцы)</span></li>
+        </ul>
+      </aside>
+    </div>
+
+    <!-- ═════ ВИТРИНА С АВАТАРКАМИ ═════ -->
+    <figure class="plate">
+      <div class="plate__frame">
+        <div class="plate__window">
+          <canvas id="plate" aria-hidden="true"></canvas>
+
+          <!-- аватарки: чтобы поставить свои фото, положите avatars/steam.jpg и т.д. -->
+          <div class="faces" id="faces" role="group" aria-label="Аватарки соцсетей">
+            <div class="face is-active" data-nick="goose_kra" data-net="Discord">
+              <a class="face__link" href="https://discord.com/users/690585628798222377" target="_blank" rel="noopener noreferrer" aria-label="Discord — goose_kra">
+                <span class="face__disc face__disc--discord">
+                  <span class="face__mono">DC</span>
+                  <img class="face__img" src="avatars/discord.png" alt="" loading="lazy">
+                </span>
+                <span class="face__net">Discord</span>
+              </a>
+            </div>
+            <div class="face" data-nick="@Mister_Pou" data-net="Telegram">
+              <a class="face__link" href="https://t.me/Mister_Pou" target="_blank" rel="noopener noreferrer" aria-label="Telegram — @Mister_Pou">
+                <span class="face__disc face__disc--telegram">
+                  <span class="face__mono">TG</span>
+                  <img class="face__img" src="avatars/telegram-personal.jpg" alt="" loading="lazy">
+                </span>
+                <span class="face__net">Telegram</span>
+              </a>
+            </div>
+            <div class="face" data-nick="@goose_cave" data-net="Telegram-канал">
+              <a class="face__link" href="https://t.me/goose_cave" target="_blank" rel="noopener noreferrer" aria-label="Telegram-канал — @goose_cave">
+                <span class="face__disc face__disc--telegram">
+                  <span class="face__mono">TG</span>
+                  <img class="face__img" src="avatars/telegram.jpg" alt="" loading="lazy">
+                </span>
+                <span class="face__net">Видели в:</span>
+              </a>
+            </div>
+            <div class="face" data-nick="Гусь" data-net="Steam">
+              <a class="face__link" href="https://steamcommunity.com/id/goose_kra/" target="_blank" rel="noopener noreferrer" aria-label="Steam — Гусь">
+                <span class="face__disc face__disc--steam">
+                  <span class="face__mono">ST</span>
+                  <img class="face__img" src="avatars/steam.jpg" alt="" loading="lazy">
+                </span>
+                <span class="face__net">Steam</span>
+              </a>
+            </div>
+            <div class="face" data-nick="@goose_krak" data-net="TikTok">
+              <a class="face__link" href="https://www.tiktok.com/@goose_krak" target="_blank" rel="noopener noreferrer" aria-label="TikTok — @goose_krak">
+                <span class="face__disc face__disc--tiktok">
+                  <span class="face__mono">TT</span>
+                  <img class="face__img" src="avatars/tiktok.jpg" alt="" loading="lazy">
+                </span>
+                <span class="face__net">TikTok</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <svg class="plate__arch" viewBox="0 0 100 140" preserveAspectRatio="none" fill="none" stroke="currentColor" aria-hidden="true">
+          <path class="plate__arch-line" pathLength="1" d="M1,78.4C1,39.6 24.4,16.8 50,0.4 75.6,16.8 99,39.6 99,78.4L99,139L1,139Z" vector-effect="non-scaling-stroke"/>
+          <path class="plate__arch-inner" pathLength="1" d="M8,80.5C8,44 26.5,23 50,8.5 73.5,23 92,44 92,80.5" vector-effect="non-scaling-stroke"/>
+        </svg>
+
+        <div class="sparkles" aria-hidden="true">
+          <i class="spark" style="--x:7%;--y:20%;--s:12px;--t:5.4s;--d:0.2s"></i>
+          <i class="spark" style="--x:90%;--y:10%;--s:16px;--t:6.6s;--d:1.4s"></i>
+          <i class="spark" style="--x:86%;--y:52%;--s:10px;--t:4.8s;--d:2.3s"></i>
+          <i class="spark" style="--x:3%;--y:64%;--s:14px;--t:7s;--d:0.8s"></i>
+          <i class="spark" style="--x:64%;--y:94%;--s:11px;--t:5.9s;--d:1.9s"></i>
+        </div>
+      </div>
+
+      <figcaption class="plate__caption">
+        <span class="plate__known">
+          <span class="plate__known-label">также известен как:</span>
+          <b class="plate__known-nick" id="faceNick">goose_kra</b>
+        </span>
+      </figcaption>
+    </figure>
+
+    <!-- ═════ ССЫЛКИ ═════ -->
+    <section class="index" id="links" aria-labelledby="links-title">
+      <div class="index__head">
+        <h2 class="index__title" id="links-title">Связь</h2>
+        <span class="index__rule" aria-hidden="true"><canvas id="divider"></canvas></span>
+        <p class="index__note">05 каналов</p>
+      </div>
+
+      <ol class="index__list">
+        <li>
+          <a class="row" href="https://discord.com/users/690585628798222377" target="_blank" rel="noopener noreferrer" style="--brand:#5865f2">
+            <span class="row__num">01</span>
+            <span class="row__name">Discord</span>
+            <span class="row__handle">goose_kra</span>
+            <span class="row__arrow" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.1"><path d="M2.5 9.5 9.5 2.5M4 2.5h5.5V8"/></svg></span>
+          </a>
+        </li>
+        <li>
+          <a class="row" href="https://t.me/Mister_Pou" target="_blank" rel="noopener noreferrer" style="--brand:#2aabee">
+            <span class="row__num">02</span>
+            <span class="row__name">Telegram</span>
+            <span class="row__handle">@Mister_Pou</span>
+            <span class="row__arrow" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.1"><path d="M2.5 9.5 9.5 2.5M4 2.5h5.5V8"/></svg></span>
+          </a>
+        </li>
+        <li>
+          <a class="row" href="https://t.me/goose_cave" target="_blank" rel="noopener noreferrer" style="--brand:#1b7fb5" title="Канал с всякой сранью">
+            <span class="row__num">03</span>
+            <span class="row__name">Канал</span>
+            <span class="row__handle">@goose_cave · канал с всякой сранью</span>
+            <span class="row__arrow" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.1"><path d="M2.5 9.5 9.5 2.5M4 2.5h5.5V8"/></svg></span>
+          </a>
+        </li>
+        <li>
+          <a class="row" href="https://steamcommunity.com/id/goose_kra/" target="_blank" rel="noopener noreferrer" style="--brand:#3d7a9e">
+            <span class="row__num">04</span>
+            <span class="row__name">Steam</span>
+            <span class="row__handle">Гусь</span>
+            <span class="row__arrow" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.1"><path d="M2.5 9.5 9.5 2.5M4 2.5h5.5V8"/></svg></span>
+          </a>
+        </li>
+        <li>
+          <a class="row" href="https://www.tiktok.com/@goose_krak" target="_blank" rel="noopener noreferrer" style="--brand:#fe2c55">
+            <span class="row__num">05</span>
+            <span class="row__name">TikTok</span>
+            <span class="row__handle">@goose_krak</span>
+            <span class="row__arrow" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.1"><path d="M2.5 9.5 9.5 2.5M4 2.5h5.5V8"/></svg></span>
+          </a>
+        </li>
+      </ol>
+    </section>
+  </main>
+
+</div>
+
+<div class="waterline">
+  <canvas id="waterline" aria-hidden="true"></canvas>
+
+</div>
+
+<footer class="footer">
+  <canvas class="footer__signal" id="signal" aria-hidden="true"></canvas>
+  <div class="shell footer__inner">
+    <p>© 2026, Мне нужен только мёд</p>
+    <p class="footer__note">Очень жидко</p>
+    <a class="footer__top" href="#top">наверх ↑</a>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<audio id="track" preload="auto" autoplay muted playsinline hidden></audio>
+
+<script src="side-left.js"></script>
+<script src="side-right.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+Здесь пять аватарок из профилей:
+
+    steam.jpg              — Steam (Гусь)
+    discord.png            — Discord (goose_kra)
+    tiktok.jpg             — TikTok (@goose_krak)
+    telegram-personal.jpg  — Telegram (@Mister_Pou)
+    telegram.jpg           — канал (@goose_cave), подпись «Видели в:»
+
+Любую можно заменить, сохранив имя файла.
+Подпись под аркой берётся из data-nick, надпись в иконке — из .face__net.
