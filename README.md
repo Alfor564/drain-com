@@ -311,6 +311,9 @@ SVG-дефах в `index.html`, применяется к контенту (ша
 
 ## Публикация
 
+**Живёт здесь:** https://alfor564.github.io/gdsait/
+**Репозиторий:** https://github.com/Alfor564/gdsait
+
 **GitHub Pages:** репозиторий → Settings → Pages → Branch `main` / root.
 **Netlify / Vercel:** перетащите папку в окно деплоя; сборка не нужна.
 **Свой домен:** добавьте домен в настройках хостинга и A/CNAME-записи.
