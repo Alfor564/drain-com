@@ -96,24 +96,18 @@ avatars/telegram.jpg           — канал (@goose_cave), подпись «В
 
 ## Счётчик уникальных
 
-Справа сверху — просто число, без подписи. Сейчас это заглушка: `localStorage`
-запоминает браузер и считает его один раз; база 0, первый заход = 1. При
-перезагрузке число не меняется. В `app.js`:
+Справа сверху — число уникальных посетителей из **Cloudflare D1** (Worker в
+`backend/`). Считается по `CF-Connecting-IP`; сырой IP не хранится — только
+SHA-256 с секретной солью. База 0, первый заход = 1; при перезагрузке число
+не меняется. Если API недоступен, сайт откатывается на локальный
+`localStorage`.
 
 ```js
-const seen = localStorage.getItem("uniqueUser");
-let n = Number(localStorage.getItem("uniqueCount")) || 0;
-if (!seen) {
-  n += 1;
-  localStorage.setItem("uniqueUser", "1");
-  localStorage.setItem("uniqueCount", String(n));
-}
-visitsEl.textContent = String(Math.max(1, n));
+const API_BASE = "https://drain-com-api.p45max120w5.workers.dev";
+// POST /visit → { visits, likes, dislikes, vote }
 ```
 
-Настоящее число уникальных посетителей требует бэкенда. Когда подключите
-счётчик на GitHub — замените этот блок на запрос к своему API, оставив только
-`visitsEl.textContent = …`.
+Подробности, схема и деплой — в [backend/README.md](backend/README.md).
 
 ---
 
@@ -167,7 +161,11 @@ SVG-дефах в `index.html`, применяется к контенту (ша
 фоновая вывеска и боковые колонки), не трогая снег и канвасы. На ≤760px,
 в `prefers-reduced-motion` и в тихом режиме (`body.is-calm`) отключается.
 
-**Лайк / дизлайк.** Справа от статуса — два пальца (вверх/вниз); под каждым просто чёрное число нажатий, без фона и плашки. Счётчик — стоящие уникальные голоса: снимаешь — число уменьшается, переключаешь — переезжает; при перезагрузке стоит. Хранится на браузер (`localStorage`, `warm.respect.v1`); настоящие уникальные IP без бэкенда не посчитать — для общего числа нужен API.\n\n**Жидкое имя.** `.name__first` растянуто только в длину (`scaleX(2.85)`), высота
+**Лайк / дизлайк.** Справа от статуса — два пальца (вверх/вниз); под каждым
+чёрное число голосов, без фона. Голоса хранятся в Cloudflare D1 по
+уникальному IP (SHA-256 от `CF-Connecting-IP`): один стоящий голос на IP,
+клик ставит/снимает, переключение переносит. Если API недоступен — локальный
+фолбэк (`localStorage`, `warm.respect.v1`).\n\n**Жидкое имя.** `.name__first` растянуто только в длину (`scaleX(2.85)`), высота
 не меняется. Внутри работает SVG-фильтр `#liquidName` (`feTurbulence` +
 `feDisplacementMap`): он плавно меняет `baseFrequency` и `scale`, поэтому буквы
 текут, но не прыгают и не обрезаются (область фильтра 220%); `scale` ходит
@@ -313,6 +311,7 @@ SVG-дефах в `index.html`, применяется к контенту (ша
 
 **Живёт здесь:** https://alfor564.github.io/drain-com/
 **Репозиторий:** https://github.com/Alfor564/drain-com
+**API (D1):** https://drain-com-api.p45max120w5.workers.dev — `backend/` (Cloudflare Worker + D1, free)
 
 **GitHub Pages:** репозиторий → Settings → Pages → Branch `main` / root.
 **Netlify / Vercel:** перетащите папку в окно деплоя; сборка не нужна.

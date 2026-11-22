@@ -785,19 +785,45 @@
 
   /* ── счётчик заходов (заглушка, потом заменить на GitHub) ── */
 
+  /* ── API: постоянные счётчики на Cloudflare (D1 + Worker) ── */
+
+  const API_BASE = "https://drain-com-api.p45max120w5.workers.dev";
+
+  async function api(path, options = {}) {
+    if (!API_BASE) return null;
+    try {
+      const res = await fetch(API_BASE.replace(/\/$/, "") + path, {
+        cache: "no-store",
+        ...options,
+        headers: { "content-type": "application/json", ...(options.headers || {}) },
+      });
+      if (!res.ok) return null;
+      return await res.json();
+    } catch (_) {
+      return null;
+    }
+  }
+
+  let applyServerStats = null;
+
   if (visitsEl) {
+    let n = 0;
     try {
       const seen = localStorage.getItem("uniqueUser");
-      let n = Number(localStorage.getItem("uniqueCount")) || 0;
+      n = Number(localStorage.getItem("uniqueCount")) || 0;
       if (!seen) {
         n += 1;
         localStorage.setItem("uniqueUser", "1");
         localStorage.setItem("uniqueCount", String(n));
       }
-      visitsEl.textContent = String(Math.max(1, n));
-    } catch (_) {
-      visitsEl.textContent = "1";
-    }
+    } catch (_) {}
+    visitsEl.textContent = String(Math.max(1, n));
+
+    api("/visit", { method: "POST" }).then((stats) => {
+      if (!stats) return;
+      if (Number.isFinite(stats.visits)) visitsEl.textContent = String(stats.visits);
+      if (applyServerStats) applyServerStats(stats);
+    });
   }
 
   window.setInterval(() => {
@@ -916,7 +942,6 @@
       if (raw) {
         const saved = JSON.parse(raw);
         data.vote = saved.vote === "like" || saved.vote === "dislike" ? saved.vote : "";
-        // ровно один стоящий голос у этого браузера
         data.like = data.vote === "like" ? 1 : 0;
         data.dislike = data.vote === "dislike" ? 1 : 0;
       }
@@ -936,26 +961,53 @@
       });
     };
 
+    let busy = false;
+
+    applyServerStats = (stats) => {
+      if (!stats) return;
+      if (Number.isFinite(stats.likes)) data.like = stats.likes;
+      if (Number.isFinite(stats.dislikes)) data.dislike = stats.dislikes;
+      data.vote = stats.vote === "like" || stats.vote === "dislike" ? stats.vote : "";
+      render();
+    };
+
     sets.forEach((set) => {
       ["like", "dislike"].forEach((key) => {
         const btn = set[key];
         if (!btn) return;
-        btn.addEventListener("click", () => {
-          // ровно один стоящий голос: без накоплений и двойных единиц
-          if (data.vote === key) {
-            data[key] = 0;
-            data.vote = "";
+        btn.addEventListener("click", async () => {
+          if (busy) return;
+          busy = true;
+
+          const result = await api("/vote", {
+            method: "POST",
+            body: JSON.stringify({ vote: key }),
+          });
+
+          if (result) {
+            applyServerStats(result);
           } else {
-            if (data.vote) data[data.vote] = 0;
-            data[key] = 1;
-            data.vote = key;
+            // фолбэк без API: локальный голос
+            if (data.vote === key) {
+              data[key] = 0;
+              data.vote = "";
+            } else {
+              if (data.vote) data[data.vote] = 0;
+              data[key] = 1;
+              data.vote = key;
+            }
+            try { localStorage.setItem(KEY, JSON.stringify(data)); } catch (_) {}
+            render();
           }
-          try { localStorage.setItem(KEY, JSON.stringify(data)); } catch (_) {}
-          render();
+          busy = false;
         });
       });
     });
+
     render();
+    api("/stats").then((stats) => {
+      if (stats) applyServerStats(stats);
+    });
   }
 
   /* ── боковые колонки: полный текст + бесшовная прокрутка ── */

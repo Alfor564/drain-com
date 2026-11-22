@@ -1,0 +1,12 @@
+name = "drain-com-api"
+main = "src/worker.js"
+compatibility_date = "2024-11-01"
+workers_dev = true
+
+[vars]
+ALLOWED_ORIGINS = "https://alfor564.github.io,http://localhost:8099,http://127.0.0.1:8099,null"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "drain-com"
+database_id = "2d4a1627-7d40-4b54-93ba-7e1d58bca7fe"
