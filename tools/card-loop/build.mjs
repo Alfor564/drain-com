@@ -106,6 +106,7 @@ log("сервер", ORIGIN);
 /* ── Chrome + CDP ──────────────────────────────────────────── */
 
 const chromePath = findChrome();
+const ffmpeg = findFfmpeg();
 const profile = fs.mkdtempSync(path.join(os.tmpdir(), "card-chrome-"));
 const chrome = spawn(chromePath, [
   "--headless=new",
@@ -118,18 +119,20 @@ const chrome = spawn(chromePath, [
   "--disable-dev-shm-usage",
   "--disable-gpu",
   "about:blank"
-], { stdio: "ignore" });
+], { stdio: ["ignore", "ignore", "pipe"] });
 
 const portFile = path.join(profile, "DevToolsActivePort");
+let chromeErr = "";
+chrome.stderr.on("data", (d) => { chromeErr += d.toString(); });
 let cdpPort = 0;
-for (let i = 0; i < 100; i++) {
+for (let i = 0; i < 300; i++) {
   if (fs.existsSync(portFile)) {
     const txt = fs.readFileSync(portFile, "utf8").split("\n");
     if (txt[0]) { cdpPort = Number(txt[0]); break; }
   }
   await wait(100);
 }
-if (!cdpPort) throw new Error("Chrome не запустился");
+if (!cdpPort) throw new Error("Chrome не запустился\n" + chromeErr.slice(-800));
 const CDP = `http://127.0.0.1:${cdpPort}`;
 for (let i = 0; i < 50; i++) {
   try { const r = await fetch(`${CDP}/json/version`); if (r.ok) break; } catch {}
@@ -248,14 +251,13 @@ log("кадры готовы за", `${Math.round((Date.now() - started) / 1000)
 
 /* ── кодирование ───────────────────────────────────────────── */
 
-const ffmpeg = findFfmpeg();
 fs.mkdirSync(PREVIEW, { recursive: true });
 const seq = path.join(framesDir, "f_%04d.png");
 
 await run(ffmpeg, [
   "-y", "-framerate", String(fps), "-i", seq,
   "-vf", `scale=${VIEW.width}:${VIEW.height}:flags=lanczos`,
-  "-c:v", "libx264", "-profile:v", "high", "-crf", "20", "-preset", "slow",
+  "-c:v", "libx264", "-profile:v", "high", "-crf", "20", "-preset", "medium",
   "-pix_fmt", "yuv420p", "-movflags", "+faststart", "-an", OUT_MP4
 ]);
 log("mp4:", (fs.statSync(OUT_MP4).size / 1024).toFixed(0), "КБ");
